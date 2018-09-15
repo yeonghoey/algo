@@ -91,6 +91,28 @@ func TestAdd(t *testing.T) {
 	}
 }
 
+func TestSub(t *testing.T) {
+	tests := []struct {
+		a, b, want string
+	}{
+		{"1", "0", "1"},
+		{"1", "1", "0"},
+		{"10", "1", "9"},
+		{"100", "1", "99"},
+		{"1234", "456", "778"},
+		{"1000", "191", "809"},
+	}
+
+	for _, test := range tests {
+		a, _ := toDigits(test.a)
+		b, _ := toDigits(test.b)
+		got := a.sub(b).number()
+		if got != test.want {
+			t.Errorf("%#v.sub(%#v) = %q", test.a, test.b, got)
+		}
+	}
+}
+
 func TestShift(t *testing.T) {
 	tests := []struct {
 		ds   digits

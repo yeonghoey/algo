@@ -66,6 +66,40 @@ func (ds digits) add(other digits) digits {
 	return result
 }
 
+func (ds digits) sub(other digits) digits {
+	n := len(ds)
+	result := make(digits, n)
+	for i := 0; i < len(ds); i++ {
+		diff := ds[i]
+		if i < len(other) {
+			diff -= other[i]
+		}
+		if diff < 0 {
+			if i+1 < n {
+				diff += 10
+				ds[i+1]--
+			} else {
+				panic(fmt.Errorf("digits: sub only supports a - b, where a > b"))
+			}
+		}
+		result[i] = diff
+	}
+
+	// Remove preceding zeros
+	last := -1
+	for i := n - 1; i >= 1; i-- {
+		if result[i] != 0 {
+			break
+		} else {
+			last = i
+		}
+	}
+	if last > 0 {
+		return result[:last]
+	}
+	return result
+}
+
 func (ds digits) shift(k int) digits {
 	n := len(ds) + k
 	shifted := make(digits, n)
