@@ -132,6 +132,25 @@ func TestShift(t *testing.T) {
 	}
 }
 
+func TestNoZeros(t *testing.T) {
+	tests := []struct {
+		ds   digits
+		want digits
+	}{
+		{digits{1}, digits{1}},
+		{digits{1, 0}, digits{1}},
+		{digits{1, 2, 3, 0, 0}, digits{1, 2, 3}},
+	}
+
+	for _, test := range tests {
+		got := test.ds.noZeros()
+		if !got.isEqual(test.want) {
+			t.Errorf("%#v.noZeros() = %#v", test.ds, got)
+		}
+	}
+
+}
+
 func TestEnsureN(t *testing.T) {
 	tests := []struct {
 		ds   digits

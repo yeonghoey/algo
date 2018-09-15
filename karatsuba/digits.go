@@ -85,19 +85,7 @@ func (ds digits) sub(other digits) digits {
 		result[i] = diff
 	}
 
-	// Remove preceding zeros
-	last := -1
-	for i := n - 1; i >= 1; i-- {
-		if result[i] != 0 {
-			break
-		} else {
-			last = i
-		}
-	}
-	if last > 0 {
-		return result[:last]
-	}
-	return result
+	return result.noZeros()
 }
 
 func (ds digits) shift(k int) digits {
@@ -107,6 +95,22 @@ func (ds digits) shift(k int) digits {
 		shifted[i] = ds[i-k]
 	}
 	return shifted
+}
+
+func (ds digits) noZeros() digits {
+	// Remove preceding zeros
+	n, last := len(ds), -1
+	for i := n - 1; i >= 1; i-- {
+		if ds[i] != 0 {
+			break
+		} else {
+			last = i
+		}
+	}
+	if last > 0 {
+		return ds[:last]
+	}
+	return ds
 }
 
 func (ds digits) ensureN(n int) digits {
