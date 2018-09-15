@@ -90,3 +90,22 @@ func TestAdd(t *testing.T) {
 		}
 	}
 }
+
+func TestShift(t *testing.T) {
+	tests := []struct {
+		ds   digits
+		k    int
+		want digits
+	}{
+		{digits{1}, 1, digits{0, 1}},
+		{digits{1, 2}, 2, digits{0, 0, 1, 2}},
+		{digits{1, 2, 3}, 3, digits{0, 0, 0, 1, 2, 3}},
+	}
+
+	for _, test := range tests {
+		got := test.ds.shift(test.k)
+		if !got.isEqual(test.want) {
+			t.Errorf("%#v.shift(%d) = %#v", test.ds, test.k, got)
+		}
+	}
+}

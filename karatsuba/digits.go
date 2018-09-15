@@ -66,6 +66,15 @@ func (ds digits) add(other digits) digits {
 	return result
 }
 
+func (ds digits) shift(k int) digits {
+	n := len(ds) + k
+	shifted := make(digits, n)
+	for i := k; i < n; i++ {
+		shifted[i] = ds[i-k]
+	}
+	return shifted
+}
+
 func (ds digits) number() string {
 	n := len(ds)
 	rs := make([]rune, n)
