@@ -4,8 +4,8 @@ import "testing"
 
 func TestIsEqual(t *testing.T) {
 	tests := []struct {
-		a    digits
-		b    digits
+		x    digits
+		y    digits
 		want bool
 	}{
 		{nil, nil, true},
@@ -16,12 +16,12 @@ func TestIsEqual(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		ab := test.a.isEqual(test.b)
-		ba := test.b.isEqual(test.a)
+		xy := test.x.isEqual(test.y)
+		yx := test.y.isEqual(test.x)
 
-		if !(ab == ba && ba == test.want) {
-			t.Logf("%#v.isEqual(%#v) = %t", test.a, test.b, ab)
-			t.Logf("%#v.isEqual(%#v) = %t", test.b, test.a, ba)
+		if !(xy == yx && yx == test.want) {
+			t.Logf("%#v.isEqual(%#v) = %t", test.x, test.y, xy)
+			t.Logf("%#v.isEqual(%#v) = %t", test.y, test.x, yx)
 			t.Fail()
 		}
 	}
@@ -68,7 +68,7 @@ func TestNumber(t *testing.T) {
 
 func TestAdd(t *testing.T) {
 	tests := []struct {
-		a, b, want string
+		x, y, want string
 	}{
 		{"0", "0", "0"},
 		{"1", "0", "1"},
@@ -79,13 +79,13 @@ func TestAdd(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		a, _ := toDigits(test.a)
-		b, _ := toDigits(test.b)
-		ab := a.add(b).number()
-		ba := b.add(a).number()
-		if !(ab == ba && ba == test.want) {
-			t.Logf("%#v.add(%#v) = %q", test.a, test.b, ab)
-			t.Logf("%#v.add(%#v) = %q", test.b, test.a, ba)
+		x, _ := toDigits(test.x)
+		y, _ := toDigits(test.y)
+		xy := x.add(y).number()
+		yx := y.add(x).number()
+		if !(xy == yx && yx == test.want) {
+			t.Logf("%#v.add(%#v) = %q", test.x, test.y, xy)
+			t.Logf("%#v.add(%#v) = %q", test.y, test.x, yx)
 			t.Fail()
 		}
 	}
@@ -93,7 +93,7 @@ func TestAdd(t *testing.T) {
 
 func TestSub(t *testing.T) {
 	tests := []struct {
-		a, b, want string
+		x, y, want string
 	}{
 		{"1", "0", "1"},
 		{"1", "1", "0"},
@@ -104,11 +104,11 @@ func TestSub(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		a, _ := toDigits(test.a)
-		b, _ := toDigits(test.b)
-		got := a.sub(b).number()
+		x, _ := toDigits(test.x)
+		y, _ := toDigits(test.y)
+		got := x.sub(y).number()
 		if got != test.want {
-			t.Errorf("%#v.sub(%#v) = %q", test.a, test.b, got)
+			t.Errorf("%#v.sub(%#v) = %q", test.x, test.y, got)
 		}
 	}
 }
