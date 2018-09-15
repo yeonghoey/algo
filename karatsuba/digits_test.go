@@ -131,3 +131,23 @@ func TestShift(t *testing.T) {
 		}
 	}
 }
+
+func TestEnsureN(t *testing.T) {
+	tests := []struct {
+		ds   digits
+		n    int
+		want digits
+	}{
+		{digits{1}, 1, digits{1}},
+		{digits{1}, 2, digits{1, 0}},
+		{digits{1, 2, 3}, 5, digits{1, 2, 3, 0, 0}},
+	}
+
+	for _, test := range tests {
+		got := test.ds.ensureN(test.n)
+		if !got.isEqual(test.want) {
+			t.Errorf("%#v.ensureN(%d) = %#v", test.ds, test.n, got)
+		}
+	}
+
+}

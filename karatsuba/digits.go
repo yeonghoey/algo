@@ -109,6 +109,22 @@ func (ds digits) shift(k int) digits {
 	return shifted
 }
 
+func (ds digits) ensureN(n int) digits {
+	l := len(ds)
+	if l > n {
+		panic("ensureN: n is greater than len(ds)")
+	}
+	if l == n {
+		return ds
+	}
+
+	for i := 0; i < n-l; i++ {
+		ds = append(ds, 0)
+	}
+	return ds
+
+}
+
 func (ds digits) number() string {
 	n := len(ds)
 	rs := make([]rune, n)
