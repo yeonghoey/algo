@@ -1,10 +1,6 @@
 package invcnt
 
 import (
-	"bufio"
-	"fmt"
-	"io"
-	"os"
 	"testing"
 )
 
@@ -25,37 +21,5 @@ func TestCount(t *testing.T) {
 		if got := Count(test.ar); got != test.want {
 			t.Errorf("Count(%v) = %d, want %d", test.ar, got, test.want)
 		}
-	}
-}
-
-func TestCountExample(t *testing.T) {
-	f, err := os.Open("example.txt")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer func() {
-		if err := f.Close(); err != nil {
-			t.Fatal(err)
-		}
-	}()
-
-	reader := bufio.NewReader(f)
-
-	var n int
-	var ar []int
-	for {
-		_, err := fmt.Fscan(reader, &n)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			t.Fatal(err)
-		}
-		ar = append(ar, n)
-	}
-
-	got, want := Count(ar), 2407905288
-	if got != want {
-		t.Errorf("Example case failed")
 	}
 }
