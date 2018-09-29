@@ -9,24 +9,26 @@ import (
 
 func TestQsort(t *testing.T) {
 	cases := []struct {
-		a     []int
-		first int
-		last  int
+		a      []int
+		first  int
+		last   int
+		median int
 	}{
-		{[]int{1}, 0, 0},
-		{[]int{1, 2}, 1, 1},
-		{[]int{2, 1}, 1, 1},
-		{[]int{1, 2, 3}, 3, 3},
-		{[]int{1, 3, 2}, 3, 2},
-		{[]int{2, 1, 3}, 2, 3},
-		{[]int{2, 3, 1}, 2, 3},
-		{[]int{3, 1, 2}, 3, 2},
-		{[]int{3, 2, 1}, 3, 3},
+		{[]int{1}, 0, 0, 0},
+		{[]int{1, 2}, 1, 1, 1},
+		{[]int{2, 1}, 1, 1, 1},
+		{[]int{1, 2, 3}, 3, 3, 2},
+		{[]int{1, 3, 2}, 3, 2, 2},
+		{[]int{2, 1, 3}, 2, 3, 2},
+		{[]int{2, 3, 1}, 2, 3, 2},
+		{[]int{3, 1, 2}, 3, 2, 2},
+		{[]int{3, 2, 1}, 3, 3, 2},
 	}
 
 	for _, c := range cases {
 		verify(t, First, c.a, c.first)
 		verify(t, Last, c.a, c.last)
+		verify(t, Median, c.a, c.median)
 	}
 
 }

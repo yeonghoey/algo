@@ -32,6 +32,29 @@ func Last(a []int) int {
 	})
 }
 
+// Median quick sorts an int slice with choosing always the median element of first, middle, last as the pivot.
+func Median(a []int) int {
+	return Qsort(a, func(a []int) int {
+		n := len(a)
+		fi, mi, li := 0, (n-1)/2, n-1
+		f, m, l := a[fi], a[mi], a[li]
+
+		if (m <= f && f <= l) || (l <= f && f <= m) {
+			return fi
+		}
+
+		if (f <= m && m <= l) || (l <= m && m <= f) {
+			return mi
+		}
+
+		if (f <= l && l <= m) || (m <= l && l <= f) {
+			return li
+		}
+
+		panic("Unexpected")
+	})
+}
+
 func partition(a []int, pi int) ([]int, []int) {
 	n := len(a)
 	a[0], a[pi] = a[pi], a[0]
