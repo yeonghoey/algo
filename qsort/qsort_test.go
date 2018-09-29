@@ -1,33 +1,51 @@
 package qsort
 
 import (
+	"reflect"
+	"runtime"
 	"sort"
 	"testing"
 )
 
-func TestFirst(t *testing.T) {
+func TestQsort(t *testing.T) {
 	cases := []struct {
 		a     []int
-		count int
+		first int
+		last  int
 	}{
-		{[]int{1}, 0},
-		{[]int{2, 1}, 1},
-		{[]int{2, 3, 1}, 2},
-		{[]int{3, 2, 1}, 3},
+		{[]int{1}, 0, 0},
+		{[]int{1, 2}, 1, 1},
+		{[]int{2, 1}, 1, 1},
+		{[]int{1, 2, 3}, 3, 3},
+		{[]int{1, 3, 2}, 3, 2},
+		{[]int{2, 1, 3}, 2, 3},
+		{[]int{2, 3, 1}, 2, 3},
+		{[]int{3, 1, 2}, 3, 2},
+		{[]int{3, 2, 1}, 3, 3},
 	}
 
 	for _, c := range cases {
-		a := make([]int, len(c.a))
-		copy(a, c.a)
-
-		count := First(a)
-
-		if !sort.IntsAreSorted(a) {
-			t.Errorf("First(%v) did not sort properly. Got %v", c.a, a)
-		}
-		if count != c.count {
-			t.Errorf("First(%v) = %d, want %d", c.a, count, c.count)
-		}
+		verify(t, First, c.a, c.first)
+		verify(t, Last, c.a, c.last)
 	}
 
+}
+
+func verify(t *testing.T, qsort func([]int) int, ca []int, want int) {
+	a := make([]int, len(ca))
+	copy(a, ca)
+
+	name := funcName(qsort)
+	count := qsort(a)
+
+	if !sort.IntsAreSorted(a) {
+		t.Errorf("%s(%v) did not sort properly. Got %v", name, ca, a)
+	}
+	if count != want {
+		t.Errorf("First(%v) = %d, want %d", ca, count, want)
+	}
+}
+
+func funcName(i interface{}) string {
+	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 }

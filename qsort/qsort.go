@@ -25,6 +25,13 @@ func First(a []int) int {
 	})
 }
 
+// Last quick sorts an int slice with choosing always the last element as the pivot.
+func Last(a []int) int {
+	return Qsort(a, func(a []int) int {
+		return len(a) - 1
+	})
+}
+
 func partition(a []int, pi int) ([]int, []int) {
 	n := len(a)
 	a[0], a[pi] = a[pi], a[0]
