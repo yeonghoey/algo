@@ -1,6 +1,8 @@
 package mincut
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestWithEdges(t *testing.T) {
 	cases := []struct {

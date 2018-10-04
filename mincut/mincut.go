@@ -1,7 +1,6 @@
 package mincut
 
 import (
-	"math"
 	"math/rand"
 )
 
@@ -31,17 +30,33 @@ func WithEdges(edges []Edge) int {
 // using randomized contraction algorithm.
 func WithGraph(g Graph) int {
 	n := len(g)
-	t := n * n * int(math.Log2(float64(n)))
+
+	t := n * n
+	ch := make(chan int, t)
+	for i := 0; i < t; i++ {
+		go func() {
+			g1 := clone(g)
+			cut := try(g1)
+			ch <- cut
+		}()
+	}
 	best := len(toEdges(g))
-	for t > 0 {
-		g1 := clone(g)
-		cut := try(g1)
+	for i := 0; i < t; i++ {
+		cut := <-ch
 		if cut < best {
 			best = cut
 		}
-		t--
 	}
 	return best
+}
+
+func try(g Graph) int {
+	edges := toEdges(g)
+	for len(g) > 2 {
+		e := pickEdge(edges)
+		g, edges = merge(g, edges, e)
+	}
+	return len(edges)
 }
 
 func toEdges(g Graph) []Edge {
@@ -75,21 +90,12 @@ func clone(g Graph) Graph {
 	return g1
 }
 
-func try(g Graph) int {
-	for len(g) > 2 {
-		edges := toEdges(g)
-		e := pickEdge(edges)
-		merge(g, e)
-	}
-	return len(toEdges(g))
-}
-
 func pickEdge(edges []Edge) Edge {
 	i := rand.Intn(len(edges))
 	return edges[i]
 }
 
-func merge(g Graph, e Edge) {
+func merge(g Graph, edges []Edge, e Edge) (Graph, []Edge) {
 	ats := g[e.a]
 	bts := g[e.b]
 	for t, cnt := range bts {
@@ -106,4 +112,22 @@ func merge(g Graph, e Edge) {
 	}
 	delete(g, e.b)
 	delete(ats, e.b)
+
+	for i := 0; i < len(edges); {
+		e1 := edges[i]
+		if (e1.a == e.a && e1.b == e.b) || (e1.b == e.a && e1.a == e.b) {
+			edges[i] = edges[len(edges)-1]
+			edges = edges[:len(edges)-1]
+			continue
+		}
+		if edges[i].a == e.b {
+			edges[i].a = e.a
+		}
+		if edges[i].b == e.b {
+			edges[i].b = e.a
+		}
+		i++
+	}
+
+	return g, edges
 }
