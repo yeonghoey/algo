@@ -54,6 +54,11 @@ func (uf UniFind) Merge(nodeA, nodeB int) (ok bool) {
 		return false
 	}
 
+	// There is no need to union
+	if leaderA == leaderB {
+		return
+	}
+
 	a := uf[leaderA]
 	b := uf[leaderB]
 	if a.rank == b.rank {
