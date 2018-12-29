@@ -7,7 +7,7 @@ import (
 
 const threshold = 1e-3
 
-func TestTSPSimple(t *testing.T) {
+func TestTSP2(t *testing.T) {
 	vertices := []Vertex{
 		{0, 0},
 		{1, 0},
@@ -19,7 +19,7 @@ func TestTSPSimple(t *testing.T) {
 	}
 }
 
-func TestTSPFour(t *testing.T) {
+func TestTSP4(t *testing.T) {
 	vertices := []Vertex{
 		{0, 0},
 		{1, 0},
