@@ -1,11 +1,18 @@
 package tsp
 
-import "math"
+import (
+	"math"
+)
 
 // Vertex represents a position on a 2D plane.
 type Vertex struct {
 	X float64
 	Y float64
+}
+
+type key struct {
+	subset bitset
+	end    int
 }
 
 // TSP calculates the cost of the minimum distance tour
@@ -16,8 +23,9 @@ func TSP(vertices []Vertex) float64 {
 		panic("Not supported for vertices more than 64")
 	}
 
-	distanceTable := buildDistanceTable(vertices)
-	A := make(map[bitset]map[int]float64)
+	distTable := buildDistTable(vertices)
+	A := make(map[key]float64)
+	A[key{bitset(1), 0}] = 0
 	for m := 1; m < n; m++ {
 		subsets := listSubsets(n, m)
 		for _, bs := range subsets {
@@ -25,20 +33,44 @@ func TSP(vertices []Vertex) float64 {
 				if !bs.contains(j) {
 					continue
 				}
-
+				target := key{bs, j}
+				bs1 := bs.unset(j)
 				for k := 0; k < n; k++ {
-					if k == j {
+					if !bs1.contains(k) {
 						continue
+					}
+					distToK, ok := A[key{bs1, k}]
+					if !ok {
+						continue
+					}
+
+					dist1 := distToK + distTable[k][j]
+					dist, ok := A[target]
+					if !ok || dist1 < dist {
+						A[target] = dist1
 					}
 				}
 			}
 		}
 	}
-	return 0.0
+
+	var all bitset
+	for x := 0; x < n; x++ {
+		all = all.set(x)
+	}
+
+	var dist *float64
+	for j := 1; j < n; j++ {
+		dist1 := A[key{all, j}] + distTable[j][0]
+		if dist == nil || dist1 < *dist {
+			dist = &dist1
+		}
+	}
+	return *dist
 }
 
-func buildDistanceTable(vertices []Vertex) [][]float64 {
-	calcDistance := func(a, b Vertex) float64 {
+func buildDistTable(vertices []Vertex) [][]float64 {
+	calcDist := func(a, b Vertex) float64 {
 		dx := a.X - b.X
 		dy := a.Y - b.Y
 		return math.Sqrt(dx*dx + dy*dy)
@@ -49,7 +81,7 @@ func buildDistanceTable(vertices []Vertex) [][]float64 {
 	for i, from := range vertices {
 		row := make([]float64, n)
 		for j, to := range vertices {
-			row[j] = calcDistance(from, to)
+			row[j] = calcDist(from, to)
 		}
 		table[i] = row
 	}
