@@ -24,19 +24,28 @@ func TSP(vertices []Vertex) float64 {
 	}
 
 	distTable := buildDistTable(vertices)
+	subsetTable := buildSubsetTable(n)
+
 	A := make(map[key]float64)
 	A[key{bitset(1), 0}] = 0
+
 	for m := 1; m < n; m++ {
-		subsets := listSubsets(n, m)
-		for _, bs := range subsets {
-			for j := 1; j < n; j++ {
-				if !bs.contains(j) {
+		for _, bs := range subsetTable[m] {
+			var elems []int
+			for e := 0; e < n; e++ {
+				if bs.contains(e) {
+					elems = append(elems, e)
+				}
+			}
+			for _, j := range elems {
+				if j == 0 {
 					continue
 				}
+
 				target := key{bs, j}
 				bs1 := bs.unset(j)
-				for k := 0; k < n; k++ {
-					if !bs1.contains(k) {
+				for _, k := range elems {
+					if j == k {
 						continue
 					}
 					distToK, ok := A[key{bs1, k}]
@@ -88,18 +97,19 @@ func buildDistTable(vertices []Vertex) [][]float64 {
 	return table
 }
 
-func listSubsets(n, numNonZero int) []bitset {
-	bitsets := make([]bitset, 0)
-	var f func(bitset, int)
-	f = func(bs bitset, nz int) {
-		if nz == 0 {
-			bitsets = append(bitsets, bs)
+func buildSubsetTable(n int) [][]bitset {
+	table := make([][]bitset, n)
+	var f func(bitset, int, int)
+	f = func(bs bitset, from, nz int) {
+		if nz >= n {
 			return
 		}
-		for x := 1; x < n; x++ {
-			f(bs.set(x), nz-1)
+		for x := from; x < n; x++ {
+			s := bs.set(x)
+			table[nz] = append(table[nz], s)
+			f(s, x+1, nz+1)
 		}
 	}
-	f(1, numNonZero)
-	return bitsets
+	f(bitset(0).set(0), 1, 1)
+	return table
 }
