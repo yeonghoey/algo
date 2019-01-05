@@ -4,12 +4,6 @@ import (
 	"math"
 )
 
-// Vertex represents a position on a 2D plane.
-type Vertex struct {
-	X float64
-	Y float64
-}
-
 // TSP calculates the cost of the minimum distance tour
 // which visits all vertices once.
 func TSP(vertices []Vertex) float64 {
@@ -88,9 +82,7 @@ func TSP(vertices []Vertex) float64 {
 
 func buildDistTable(vertices []Vertex) [][]float64 {
 	calcDist := func(a, b Vertex) float64 {
-		dx := a.X - b.X
-		dy := a.Y - b.Y
-		return math.Sqrt(dx*dx + dy*dy)
+		return math.Sqrt(a.Dist2(b))
 	}
 
 	n := len(vertices)
