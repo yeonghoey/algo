@@ -1,11 +1,8 @@
 package tsp
 
 import (
-	"math"
 	"testing"
 )
-
-const threshold = 1e-3
 
 func TestTSP2(t *testing.T) {
 	vertices := []Vertex{
@@ -31,8 +28,4 @@ func TestTSP4(t *testing.T) {
 		t.Errorf("TSP(%v) = %.3f, want %.3f",
 			vertices, got, want)
 	}
-}
-
-func approx(a, b float64) bool {
-	return math.Abs(a-b) <= threshold
 }
