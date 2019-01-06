@@ -5,7 +5,6 @@ import (
 )
 
 // Edge is a directed one, which represents T -> H.
-// T and H should not be negative.
 type Edge struct {
 	T int
 	H int
@@ -67,21 +66,25 @@ func SCC(edges []Edge) []int {
 }
 
 func dfs(start int, g map[int][]int, explored map[int]bool, order *int, orderMap map[int]int, leaderMap map[int]int) {
-	stack := []int{start}
+	type item struct {
+		node int
+		end  bool
+	}
+	stack := []item{{start, false}}
 	for len(stack) > 0 {
-		var node int
-		node, stack = stack[len(stack)-1], stack[:len(stack)-1]
-		if node < 0 {
-			orderMap[-node] = *order
+		it := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		if it.end {
+			orderMap[it.node] = *order
 			*order++
 			continue
 		}
-		explored[node] = true
-		leaderMap[node] = start
-		stack = append(stack, -node)
-		for _, other := range g[node] {
+		explored[it.node] = true
+		leaderMap[it.node] = start
+		stack = append(stack, item{it.node, true})
+		for _, other := range g[it.node] {
 			if !explored[other] {
-				stack = append(stack, other)
+				stack = append(stack, item{other, false})
 			}
 		}
 	}
