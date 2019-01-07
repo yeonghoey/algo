@@ -12,6 +12,24 @@ type Edge struct {
 
 // SCC computes strongly connected components and returns sizes of the SCCs in decreasing order.
 func SCC(edges []Edge) []int {
+	leaderMap := SCC2(edges)
+	sccs := make(map[int]int)
+	for _, v := range leaderMap {
+		sccs[v]++
+	}
+
+	sizes := make([]int, 0, len(sccs))
+	for _, v := range sccs {
+		sizes = append(sizes, v)
+	}
+
+	sort.Sort(sort.Reverse(sort.IntSlice(sizes)))
+	return sizes
+}
+
+// SCC2 computes strongly connected components and
+// returns a map which associates each node to its leader node.
+func SCC2(edges []Edge) map[int]int {
 	g := make(map[int][]int)
 	gRev := make(map[int][]int)
 	for _, e := range edges {
@@ -51,18 +69,7 @@ func SCC(edges []Edge) []int {
 	dfsLoop(gRev)
 	dfsLoop(g)
 
-	sccs := make(map[int]int)
-	for _, v := range leaderMap {
-		sccs[v]++
-	}
-
-	sizes := make([]int, 0, len(sccs))
-	for _, v := range sccs {
-		sizes = append(sizes, v)
-	}
-
-	sort.Sort(sort.Reverse(sort.IntSlice(sizes)))
-	return sizes
+	return leaderMap
 }
 
 func dfs(start int, g map[int][]int, explored map[int]bool, order *int, orderMap map[int]int, leaderMap map[int]int) {
