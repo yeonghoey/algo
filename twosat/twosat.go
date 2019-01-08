@@ -14,11 +14,19 @@ type Clause struct {
 // TwoSat determines whether or not an assignment exists that satisfies
 // all the give clauses.
 func TwoSat(clauses []Clause) bool {
-	edges := make([]scc.Edge, 0)
+	edges := make([]scc.Edge, 0, len(clauses)*2)
 	for _, cl := range clauses {
 		edges = append(edges, scc.Edge{-cl.A, cl.B})
 		edges = append(edges, scc.Edge{-cl.B, cl.A})
 	}
-	sizes := scc.SCC(edges)
-	return sizes[0] == 1
+
+	leaderMap := scc.SCC2(edges)
+
+	for node, leader := range leaderMap {
+		leader1, ok := leaderMap[-node]
+		if ok && (leader1 == leader) {
+			return false
+		}
+	}
+	return true
 }
