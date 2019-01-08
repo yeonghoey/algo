@@ -86,6 +86,10 @@ func dfs(start int, g map[int][]int, explored map[int]bool, order *int, orderMap
 			*order++
 			continue
 		}
+		if explored[it.node] {
+			continue
+		}
+
 		explored[it.node] = true
 		leaderMap[it.node] = start
 		stack = append(stack, item{it.node, true})
